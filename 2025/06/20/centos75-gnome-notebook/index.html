@@ -26,13 +26,13 @@
 
 
 
-<link rel="canonical" href="https://www.iemoe.com/">
+<link rel="canonical" href="https://www.iemoe.com/2025/06/20/centos75-gnome-notebook/">
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"zh-CN","comments":"","permalink":"","path":"index.html","title":""}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.iemoe.com/2025/06/20/centos75-gnome-notebook/","path":"2025/06/20/centos75-gnome-notebook/","title":"关于 Centos 7.5.1804 下的 Gnome 那些逼事"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>nox blog</title>
+<title>关于 Centos 7.5.1804 下的 Gnome 那些逼事 | nox blog</title>
   
 
 
@@ -87,7 +87,7 @@
 
     <a href="/" class="brand" rel="start">
       <i class="logo-line"></i>
-      <h1 class="site-title">nox blog</h1>
+      <p class="site-title">nox blog</p>
       <i class="logo-line"></i>
     </a>
       <p class="site-subtitle" itemprop="description">亿萌 / iemoe</p>
@@ -114,7 +114,7 @@
   
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -127,6 +127,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%83%85%E5%86%B5"><span class="nav-number">2.</span> <span class="nav-text">第一种情况</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%83%85%E5%86%B5"><span class="nav-number">3.</span> <span class="nav-text">第二种情况</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -171,16 +172,17 @@
 
     </div>
 
-    <div class="main-inner index posts-expand">
+    <div class="main-inner post posts-expand">
 
-    
+
+  
 
 
 <div class="post-block">
   
   
 
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://www.iemoe.com/2025/06/20/centos75-gnome-notebook/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -194,13 +196,13 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content=" | nox blog">
+      <meta itemprop="name" content="关于 Centos 7.5.1804 下的 Gnome 那些逼事 | nox blog">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2025/06/20/centos75-gnome-notebook/" class="post-title-link" itemprop="url">关于 Centos 7.5.1804 下的 Gnome 那些逼事</a>
-        </h2>
+        <h1 class="post-title" itemprop="name headline">
+          关于 Centos 7.5.1804 下的 Gnome 那些逼事
+        </h1>
 
         <div class="post-meta-container">
           <div class="post-meta">
@@ -242,18 +244,29 @@
     
     
     
-    <div class="post-body" itemprop="articleBody">
-          <p>老版本的系统一堆破事，又不能升级，只能使用老系统一致将就着用着。</p>
+    <div class="post-body" itemprop="articleBody"><p>老版本的系统一堆破事，又不能升级，只能使用老系统一致将就着用着。</p>
 <p>什么 NFS 出问题连带着 Gnome 卡住，什么动不动就抽风…</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2025/06/20/centos75-gnome-notebook/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
+<span id="more"></span>
+
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本次环境为：</p>
+<ul>
+<li>Centos 7.5.1804</li>
+<li>内核为 ISO 自带的内核（就不能做升级，就得用旧的，别问，问就是开发需要）</li>
+<li>NFS 为官方源 Centos 7.5.1804 能用的最新版</li>
+<li>NFS 服务器为 HDD 硬盘</li>
+<li>user home 目录在 nfs 上</li>
+</ul>
+<p>这套系统运行起来，你将可能会遇到以下场景：</p>
+<ol>
+<li>NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死</li>
+<li>你用着用着，整个桌面卡死，运气好的时候他会自己重启，不会丢掉其他窗口和运行的进程（反之你只能重启VNC了</li>
+</ol>
+<h1 id="第一种情况"><a href="#第一种情况" class="headerlink" title="第一种情况"></a>第一种情况</h1><p>遇到 NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死，使用以下方法重启桌面即可恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">su - &lt;user&gt;</span><br><span class="line">export DISPLAY=:15</span><br><span class="line">gnome-shell --mode=classic --replace &amp; disown</span><br></pre></td></tr></table></figure>
+
+<p>应该就可以了</p>
+<h1 id="第二种情况"><a href="#第二种情况" class="headerlink" title="第二种情况"></a>第二种情况</h1><p>忍着，我也没辙</p>
+
     </div>
 
     
@@ -261,8 +274,15 @@
     
 
     <footer class="post-footer">
-        <div class="post-eof"></div>
-      
+          <div class="post-tags">
+              <a href="/tags/gnome/" rel="tag"><i class="fa fa-tag"></i> gnome</a>
+              <a href="/tags/nfs/" rel="tag"><i class="fa fa-tag"></i> nfs</a>
+              <a href="/tags/centos-7-5-1804/" rel="tag"><i class="fa fa-tag"></i> centos 7.5.1804</a>
+              <a href="/tags/%E5%90%90%E6%A7%BD/" rel="tag"><i class="fa fa-tag"></i> 吐槽</a>
+          </div>
+
+        
+
     </footer>
   </article>
 </div>
@@ -271,6 +291,8 @@
 
 
 
+
+    <div class="comments gitalk-container"></div>
 </div>
   </main>
 
@@ -307,7 +329,7 @@
 </noscript>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
 
-<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"fengziyun","repo":"gitalk","client_id":"Ov23liUvHUlViAJrtTjV","client_secret":"5a691824a65605df67429eb408c6fba3d6f8ce5e","admin_user":"fengziyun","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"d1546d731a9f30cc80127d57142a482b"}</script>
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"fengziyun","repo":"gitalk","client_id":"Ov23liUvHUlViAJrtTjV","client_secret":"5a691824a65605df67429eb408c6fba3d6f8ce5e","admin_user":"fengziyun","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"19aca62f43f6223a9f7317820e733438"}</script>
 <script src="/js/third-party/comments/gitalk.js" defer></script>
 
 </body>
