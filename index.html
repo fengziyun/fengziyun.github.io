@@ -105,7 +105,7 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">7</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">8</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">2</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">2</span></a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
   </ul>
 </nav>
 
@@ -153,7 +153,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -217,7 +217,20 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2025-06-21 21:05:54 / 修改时间：21:17:46" itemprop="dateCreated datePublished" datetime="2025-06-21T21:05:54+08:00">2025-06-21</time>
+      <time title="创建时间：2025-06-21 21:05:54 / 修改时间：21:22:46" itemprop="dateCreated datePublished" datetime="2025-06-21T21:05:54+08:00">2025-06-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ops/" itemprop="url" rel="index"><span itemprop="name">ops</span></a>
+        </span>
     </span>
 
   
@@ -230,40 +243,16 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h1 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h1><h2 id="Install-init"><a href="#Install-init" class="headerlink" title="Install &amp; init"></a>Install &amp; init</h2><p>软件园与Hub加速地址：<span class="exturl" data-url="aHR0cDovL21pcnJvcnMudXN0Yy5lZHUuY24v">http://mirrors.ustc.edu.cn/<i class="fa fa-external-link-alt"></i></span></p>
-<h3 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h3><p>参照官网给出的安装步骤：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmRvY2tlci5jb20vZW5naW5lL2luc3RhbGwvY2VudG9zLw==">https://docs.docker.com/engine/install/centos/<i class="fa fa-external-link-alt"></i></span></p>
-<p><strong>卸载旧docker</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sudo yum remove docker \</span><br><span class="line">                 docker-client \</span><br><span class="line">                 docker-client-latest \</span><br><span class="line">                 docker-common \</span><br><span class="line">                 docker-latest \</span><br><span class="line">                 docker-latest-logrotate \</span><br><span class="line">                 docker-logrotate \</span><br><span class="line">                 docker-engine</span><br></pre></td></tr></table></figure>
-
-<p><strong>安装环境</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager \</span><br><span class="line">   --add-repo \</span><br><span class="line">   https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
-
-<p><strong>替换官方软件源</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo sed -e &#x27;s|^baseurl=https://download.docker.com|baseurl=https://mirrors.ustc.edu.cn/docker-ce|g&#x27; \</span><br><span class="line">                 -i.bak \</span><br><span class="line">                 /etc/yum.repos.d/docker-ce.repo</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h2 id="docker-build"><a href="#docker-build" class="headerlink" title="docker build"></a>docker build</h2><p>一键清理 Build Cache 缓存命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker builder prune</span><br></pre></td></tr></table></figure>
-
-<p>如果你希望保留最近一定时间的缓存，删除时长更久的缓存，可以通过添加 –filter 参数实现，例如保留最近10天的缓存示例命令如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker builder prune --filter &#x27;until=240h&#x27;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>另外，命令 <code>docker system prune</code> 可以用于清理磁盘，删除关闭的容器、无用的数据卷和网络，以及dangling镜像（即无tag的镜像）。</p>
-<p>添加参数 <code>docker system prune -a</code> 清理得更加彻底，可以将没有容器使用Docker镜像都删掉。</p>
-<h1 id="Portainer-io"><a href="#Portainer-io" class="headerlink" title="Portainer.io"></a>Portainer.io</h1><h2 id="节点-docker-管理"><a href="#节点-docker-管理" class="headerlink" title="节点 docker 管理"></a>节点 docker 管理</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  -p 9001:9001 \</span><br><span class="line">  --name portainer_agent \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /var/lib/docker/volumes:/var/lib/docker/volumes \</span><br><span class="line">  -v /:/host \</span><br><span class="line">  portainer/agent:2.21.1</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h1 id="Jenkins-容器"><a href="#Jenkins-容器" class="headerlink" title="Jenkins 容器"></a>Jenkins 容器</h1><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 8080:8080 -p 50000:50000 \</span><br><span class="line">-v /usr/local/jenkins:/var/jenkins_home \</span><br><span class="line">--name myjenkins jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
-
-
+          <p> </p>
+<p>老系统做 docker 还是太勉强了，但是很多功能又只有容器能很方便的做到。后面才打算学 padman ，但这是后面的事了，现在就先忍忍用 docker 吧。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2025/docker-notebook/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
