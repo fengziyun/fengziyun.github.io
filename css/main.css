@@ -1,3 +1,11 @@
+body {
+  background: url("https://s2.loli.net/2023/12/25/Bm8RqTy3ZSspIrQ.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 50% 50%;
+  opacity: 0.85;
+}
 :root {
   --body-bg-color: #eee;
   --content-bg-color: #fff;
@@ -1408,7 +1416,7 @@ pre code {
     vertical-align: middle;
   }
   .links-of-author a::before {
-    background: #af1bff;
+    background: #623394;
     display: inline-block;
     margin-right: 3px;
     transform: translateY(-2px);
@@ -2717,6 +2725,14 @@ header.header {
     padding-right: 0;
     width: auto;
   }
+}
+body {
+  background: url("https://s2.loli.net/2023/12/25/Bm8RqTy3ZSspIrQ.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 50% 50%;
+  opacity: 0.95;
 }
 .column {
   width: 240px;

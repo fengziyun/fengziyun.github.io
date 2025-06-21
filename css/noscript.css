@@ -1,4 +1,12 @@
 body {
+  background: url("https://s2.loli.net/2023/12/25/Bm8RqTy3ZSspIrQ.jpg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: 50% 50%;
+  opacity: 0.85;
+}
+body {
   margin-top: 2rem;
 }
 .use-motion .menu-item,
