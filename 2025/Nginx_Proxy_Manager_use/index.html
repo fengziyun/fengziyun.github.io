@@ -252,9 +252,15 @@
         <i class="far fa-calendar"></i>
       </span>
       <span class="post-meta-item-text">发表于</span>
-      
 
-      <time title="创建时间：2025-06-25 09:36:29 / 修改时间：12:01:34" itemprop="dateCreated datePublished" datetime="2025-06-25T09:36:29+08:00">2025-06-25</time>
+      <time title="创建时间：2025-06-25 09:36:29" itemprop="dateCreated datePublished" datetime="2025-06-25T09:36:29+08:00">2025-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-26 10:58:58" itemprop="dateModified" datetime="2025-06-26T10:58:58+08:00">2025-06-26</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -306,7 +312,7 @@
 </br>
 <h2 id="原理"><a class="markdownIt-Anchor" href="#原理"></a> 原理</h2>
 <pre><code class="highlight mermaid">graph LR;
-内网 --&gt; 反向代理 --&gt; 企业微信机器人</code></pre>
+内网 --&gt; |curl 192.168.1.10:30021| 反向代理服务器 --&gt; 企业微信机器人</code></pre>
 <p>内网服务器使用 CURL 发送消息：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url=<span class="string">&quot;http://192.168.1.10:30021/PYMSG&quot;</span></span><br><span class="line">header=<span class="string">&quot;&#x27;Content-Type:application/json&#x27;&quot;</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">send_text</span></span>()&#123;</span><br><span class="line">    textmsg=<span class="string">&#x27;&#123;&quot;msgtype&quot;:&quot;markdown&quot;,&quot;markdown&quot;:&#123;&quot;content&quot;:&quot;&#x27;</span>$*<span class="string">&#x27;&quot;,&quot;mentioned_list&quot;:[&quot;&quot;]&#125;&#125;&#x27;</span></span><br><span class="line">    curl -s -H <span class="variable">$header</span> -d <span class="string">&quot;<span class="variable">$textmsg</span>&quot;</span> <span class="string">&quot;<span class="variable">$url</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>反代理服务器转发请求到企业微信的 webhook 接口</p>
