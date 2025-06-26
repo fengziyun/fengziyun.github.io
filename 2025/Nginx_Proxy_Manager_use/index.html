@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="google-site-verification" content="L-7R5mHEbzLvQooxRhYuC_6QHhjNAjiQgZzQdS94XrA">
+  <meta name="msvalidate.01" content="58938936CDC467B3746C91E9DE292D8B">
+  <meta name="baidu-site-verification" content="codeva-7Y39uMh2H1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.css" integrity="sha256-zM8WXtG4eUn7dKKNMTuoWZub++VnSfaOpA/8PJfvTBo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous" defer></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.iemoe.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":280,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":true,"motion":{"enable":true,"async":true,"duration":50,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":"auto","unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+
+
+<link rel="canonical" href="https://www.iemoe.com/2025/Nginx_Proxy_Manager_use/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.iemoe.com/2025/Nginx_Proxy_Manager_use/","path":"2025/Nginx_Proxy_Manager_use/","title":"Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址 | nox blog</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;9482df76db8645b3bc2866c7574152a3&quot;}'></script>
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.js" integrity="sha256-hiUEBwFEpLF6DlB8sGXlKo4kPZ46Ui4qGpd0vrVkOm4=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/bookmark.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.5.0/mermaid.min.js","integrity":"sha256-2obLuIPcceEhkE3G09G33hBdmE55ivVcZUlcKcGNHjU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+  <script src="/js/third-party/pace.js" defer></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">nox blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">亿萌 / iemoe</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E9%98%B6%E6%AE%B5"><span class="nav-number">2.</span> <span class="nav-text"> 准备阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.1.</span> <span class="nav-text"> 原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text"> 安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E8%AF%81%E4%B9%A6"><span class="nav-number">4.</span> <span class="nav-text"> 生成证书</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-proxy"><span class="nav-number">5.</span> <span class="nav-text"> 配置 proxy</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E7%BA%A7%E9%85%8D%E7%BD%AE"><span class="nav-number">5.1.</span> <span class="nav-text"> 高级配置</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhihao Li"
+      src="https://s2.loli.net/2025/06/22/QdmPYD6bOKuSaW2.gif">
+  <p class="site-author-name" itemprop="name">Zhihao Li</p>
+  <div class="site-description" itemprop="description">分享点个人想分享的内容~</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOm5veEBpZW1vZS5jb20=" title="E-Mail → mailto:nox@iemoe.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.iemoe.com/2025/Nginx_Proxy_Manager_use/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.loli.net/2025/06/22/QdmPYD6bOKuSaW2.gif">
+      <meta itemprop="name" content="Zhihao Li">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="nox blog">
+      <meta itemprop="description" content="分享点个人想分享的内容~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址 | nox blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2025-06-25 09:36:29 / 修改时间：12:01:34" itemprop="dateCreated datePublished" datetime="2025-06-25T09:36:29+08:00">2025-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF%E5%88%86%E4%BA%AB/" itemprop="url" rel="index"><span itemprop="name">技术分享</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ops/" itemprop="url" rel="index"><span itemprop="name">ops</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+</div>
+
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>当你需要在内网向企业微信推送消息，但又不想放行 <code>qyapi.weixin.qq.com</code> 的时候，应该有很多方法，我选择了通过 Nginx Proxy Manager 的容器进行反向代理。互联网有很多跟你将怎么用怎么用的，但最后还是得看后台日志一点一点调试摸索着，最后才成功，现在将方法教你。</p>
+<p>本篇文章只适用于我当前工作环境，若正是你需要的，那应该能帮助到你。如果有其他方法，也欢迎大佬在评论区分享自己的方法~</p>
+<span id="more"></span>
+</br>
+<h1 id="准备阶段"><a class="markdownIt-Anchor" href="#准备阶段"></a> 准备阶段</h1>
+<p>以下所有操作基本在 Linux 下完成。</p>
+<p>一台内网服务器: <code>192.168.1.100</code></p>
+<p>一台反代理服务器：<code>192.168.1.10</code></p>
+<p>一个企业微信机器人的 webhook ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0000aaaa-aaaa-aaaa-aaaa-aaaaacccccaa</span><br></pre></td></tr></table></figure>
+<p>一个证书（包含密钥），可以自生成</p>
+<p>需要的环境：</p>
+<p>openssl：任意版本，能生成自签证书就行</p>
+<p>docker：可选，你要是动手能力强可以直接安装在宿主机内，docker 都不需要了</p>
+</br>
+<h2 id="原理"><a class="markdownIt-Anchor" href="#原理"></a> 原理</h2>
+<pre><code class="highlight mermaid">graph LR;
+内网 --&gt; 反向代理 --&gt; 企业微信机器人</code></pre>
+<p>内网服务器使用 CURL 发送消息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">url=<span class="string">&quot;http://192.168.1.10:30021/PYMSG&quot;</span></span><br><span class="line">header=<span class="string">&quot;&#x27;Content-Type:application/json&#x27;&quot;</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">send_text</span></span>()&#123;</span><br><span class="line">    textmsg=<span class="string">&#x27;&#123;&quot;msgtype&quot;:&quot;markdown&quot;,&quot;markdown&quot;:&#123;&quot;content&quot;:&quot;&#x27;</span>$*<span class="string">&#x27;&quot;,&quot;mentioned_list&quot;:[&quot;&quot;]&#125;&#125;&#x27;</span></span><br><span class="line">    curl -s -H <span class="variable">$header</span> -d <span class="string">&quot;<span class="variable">$textmsg</span>&quot;</span> <span class="string">&quot;<span class="variable">$url</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反代理服务器转发请求到企业微信的 webhook 接口</p>
+</br>
+<h1 id="安装"><a class="markdownIt-Anchor" href="#安装"></a> 安装</h1>
+<p>Nginx Proxy Manager 官网</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9uZ2lueHByb3h5bWFuYWdlci5jb20v">https://nginxproxymanager.com/<i class="fa fa-external-link-alt"></i></span></p>
+<p>官网有文档，要是觉得麻烦就用官网给的安装手册，使用 docker compose 进行部署</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9uZ2lueHByb3h5bWFuYWdlci5jb20vc2V0dXAv">https://nginxproxymanager.com/setup/<i class="fa fa-external-link-alt"></i></span></p>
+<p>我的是 truenas 上直接部署的，大概是下面 <code>docker-compose.yml</code> 这样子吧</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">&#x27;jc21/nginx-proxy-manager:latest&#x27;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="comment"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30021:80&#x27;</span> <span class="comment"># Public HTTP Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30022:443&#x27;</span> <span class="comment"># Public HTTPS Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30020:81&#x27;</span> <span class="comment"># Admin Web Port</span></span><br><span class="line">      <span class="comment"># Add any other Stream port you want to expose</span></span><br><span class="line">      <span class="comment"># - &#x27;21:21&#x27; # FTP</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># Uncomment this if you want to change the location of</span></span><br><span class="line">      <span class="comment"># the SQLite DB file within the container</span></span><br><span class="line">      <span class="comment"># DB_SQLITE_FILE: &quot;/data/database.sqlite&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># Uncomment this if IPv6 is not enabled on your host</span></span><br><span class="line">      <span class="comment"># DISABLE_IPV6: &#x27;true&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./letsencrypt:/etc/letsencrypt</span></span><br></pre></td></tr></table></figure>
+<p>管理页面的端口是：30020</p>
+<p>http 端口是：30021，https 端口是 30022</p>
+</br>
+<p>然后使用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+<p>启动即可。没有额外的安装步骤，直接这么来就好了。</p>
+</br>
+<h1 id="生成证书"><a class="markdownIt-Anchor" href="#生成证书"></a> 生成证书</h1>
+<p>因为企业微信机器人是 https 协议，反代理一般都需要证书。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">私钥生成</span></span><br><span class="line">openssl genrsa -out ca-private.key 4096</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根证书生成</span></span><br><span class="line">openssl req -new -x509 -key ca-private.key -out ca.crt -days 3650</span><br></pre></td></tr></table></figure>
+<p>将证书导入 Nginx Proxy Manager</p>
+<img data-src="https://s2.loli.net/2025/06/25/2LeKdrMq6mOiIRb.png" alt="image-20250625112824512" style="zoom:50%;" />
+<img data-src="https://s2.loli.net/2025/06/25/Dc3xz6vbNFSQIs2.png" alt="image-20250625113050036" style="zoom: 67%;" />
+<p>点击 SAVE 保存即可。</p>
+</br>
+<h1 id="配置-proxy"><a class="markdownIt-Anchor" href="#配置-proxy"></a> 配置 proxy</h1>
+<img data-src="https://s2.loli.net/2025/06/25/2a4SiNElfgAvkCV.png" alt="image-20250625114941654" style="zoom:50%;" />
+<img data-src="https://s2.loli.net/2025/06/25/N29T3ItVDFbgsPH.png" alt="image-20250625114520051" style="zoom:67%;" />
+<p>这样就配置好一半了</p>
+</br>
+<h2 id="高级配置"><a class="markdownIt-Anchor" href="#高级配置"></a> 高级配置</h2>
+<p>使用 <code>location</code> 创建不通的别名，像我一开始的 <code>http://192.168.1.10:30021/PYMSG</code> 使用了 <code>PYMSG</code> 这个别名，在高级设置里是这个样子的</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">location</span> /PYMSG &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0000aaaa-aaaa-aaaa-aaaa-aaaaacccccaa;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host qyapi.weixin.qq.com;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>proxy_pass</code> ：配置企业微信机器人的 webhook 地址，这样就完成了，点击 save 保存后，在内网就可以直接使用 curl 推送消息了。</p>
+<div class="note danger"><p>注意，一次不能推送超过 4096 字节的消息，超过的话请自行截断。</p>
+</div>
+</br>
+<p>以此类推，想设置多少个别名随意，基本按照这个方式就可以正常使用了。学会后可以直接去看容器里的 nginx 配置，学学他的配置文件，后续都可以不用这个 Nginx Proxy Manager 容器了，自己下个 nginx 容器，自己做反代理了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Zhihao Li
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.iemoe.com/2025/Nginx_Proxy_Manager_use/" title="Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址">https://www.iemoe.com/2025/Nginx_Proxy_Manager_use/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/nginx/" rel="tag"><i class="fa fa-tag"></i> nginx</a>
+              <a href="/tags/proxy/" rel="tag"><i class="fa fa-tag"></i> proxy</a>
+              <a href="/tags/%E5%86%85%E7%BD%91/" rel="tag"><i class="fa fa-tag"></i> 内网</a>
+              <a href="/tags/%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/" rel="tag"><i class="fa fa-tag"></i> 消息推送</a>
+              <a href="/tags/%E4%BC%81%E4%B8%9A%E5%BE%AE%E4%BF%A1/" rel="tag"><i class="fa fa-tag"></i> 企业微信</a>
+              <a href="/tags/bot/" rel="tag"><i class="fa fa-tag"></i> bot</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2025/welcome/" rel="prev" title="Weicome">
+                  <i class="fa fa-angle-left"></i> Weicome
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Zhihao Li</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"fengziyun","repo":"gitalk","client_id":"Ov23liUvHUlViAJrtTjV","client_secret":"5a691824a65605df67429eb408c6fba3d6f8ce5e","admin_user":"fengziyun","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","createIssueManually":true,"perPage":10,"adminUser":["fengziyun"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"ee59ed7f4ba4ce34462dbc1ce8c1fb17"}</script>
+<script src="/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>

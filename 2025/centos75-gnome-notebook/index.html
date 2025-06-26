@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="google-site-verification" content="L-7R5mHEbzLvQooxRhYuC_6QHhjNAjiQgZzQdS94XrA">
+  <meta name="msvalidate.01" content="58938936CDC467B3746C91E9DE292D8B">
+  <meta name="baidu-site-verification" content="codeva-7Y39uMh2H1">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.css" integrity="sha256-zM8WXtG4eUn7dKKNMTuoWZub++VnSfaOpA/8PJfvTBo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/themes/blue/pace-theme-minimal.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pace/1.2.4/pace.min.js" integrity="sha256-gqd7YTjg/BtfqWSwsJOvndl0Bxc8gFImLEkXQT8+qj0=" crossorigin="anonymous" defer></script>
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.iemoe.com","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.1","exturl":true,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":280,"display":"always","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":true,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":"gitalk","storage":true,"lazyload":false,"nav":{"gitalk":{"order":-1}},"activeClass":"gitalk"},"stickytabs":true,"motion":{"enable":true,"async":true,"duration":50,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"top_n_per_article":"auto","unescape":true,"preload":false}}</script><script src="/js/config.js" defer></script>
+
+
+
+<link rel="canonical" href="https://www.iemoe.com/2025/centos75-gnome-notebook/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.iemoe.com/2025/centos75-gnome-notebook/","path":"2025/centos75-gnome-notebook/","title":"关于 Centos 7.5.1804 下的那些逼事"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>关于 Centos 7.5.1804 下的那些逼事 | nox blog</title>
+  
+
+
+
+  <script data-pjax defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{&quot;token&quot;: &quot;9482df76db8645b3bc2866c7574152a3&quot;}'></script>
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.6.0/pjax.min.js" integrity="sha256-vxLn1tSKWD4dqbMRyv940UYw4sXgMtYcK6reefzZrao=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.36/fancybox/fancybox.umd.js" integrity="sha256-hiUEBwFEpLF6DlB8sGXlKo4kPZ46Ui4qGpd0vrVkOm4=" crossorigin="anonymous" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script><script src="/js/bookmark.js" defer></script><script src="/js/pjax.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous" defer></script>
+<script src="/js/third-party/search/local-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.5.0/mermaid.min.js","integrity":"sha256-2obLuIPcceEhkE3G09G33hBdmE55ivVcZUlcKcGNHjU="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+  <script src="/js/third-party/fancybox.js" defer></script>
+
+  <script src="/js/third-party/pace.js" defer></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">nox blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">亿萌 / iemoe</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签<span class="badge">21</span></a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类<span class="badge">5</span></a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档<span class="badge">6</span></a></li><li class="menu-item menu-item-sitemap"><a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fa fa-spinner fa-pulse fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text"> 摘要</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#gnome-%E6%A1%8C%E9%9D%A2%E5%8D%A1%E6%AD%BB"><span class="nav-number">2.</span> <span class="nav-text"> Gnome 桌面卡死</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%A7%8D%E6%83%85%E5%86%B5"><span class="nav-number">2.1.</span> <span class="nav-text"> 第一种情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%A7%8D%E6%83%85%E5%86%B5"><span class="nav-number">2.2.</span> <span class="nav-text"> 第二种情况</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#yum-%E7%9B%B8%E5%85%B3"><span class="nav-number">3.</span> <span class="nav-text"> Yum 相关</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#rpm%E5%BC%BA%E5%88%B6%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text"> RPM强制安装</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#yum-%E4%BB%85%E4%B8%8B%E8%BD%BD%E8%BD%AF%E4%BB%B6%E5%8C%85"><span class="nav-number">3.2.</span> <span class="nav-text"> yum 仅下载软件包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cdrom"><span class="nav-number">3.3.</span> <span class="nav-text"> Cdrom</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#curl60-peers-certificate-issuer-is-not-recognized"><span class="nav-number">3.4.</span> <span class="nav-text"> curl#60 peer’s Certificate issuer is not recognized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#authentication-is-required-to-set-the-network-proxy"><span class="nav-number">3.5.</span> <span class="nav-text"> Authentication is required to set the network proxy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#system"><span class="nav-number">4.</span> <span class="nav-text"> system</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#dmesg-%E6%97%A0%E8%BE%93%E5%87%BA"><span class="nav-number">4.1.</span> <span class="nav-text"> dmesg 无输出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E%E6%97%B6%E9%97%B4%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%90%8C%E6%AD%A5"><span class="nav-number">4.2.</span> <span class="nav-text"> 与时间服务器同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3pyqt-undefined-symbolft_get_font_format-error"><span class="nav-number">4.3.</span> <span class="nav-text"> 解决PyQt: undefined symbol:FT_Get_Font_Format Error</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-pssh-%E6%88%96%E5%85%B6%E4%BB%96%E8%BF%90%E7%BB%B4%E5%B7%A5%E5%85%B7%E5%85%B3%E9%97%AD%E6%89%80%E6%9C%89%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E4%B8%8A%E6%8A%A5%E6%9C%8D%E5%8A%A1"><span class="nav-number">4.4.</span> <span class="nav-text"> 使用 pssh 或其他运维工具关闭所有服务器的上报服务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#shell"><span class="nav-number">5.</span> <span class="nav-text"> Shell</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E5%B4%A9%E6%BA%83"><span class="nav-number">5.1.</span> <span class="nav-text"> 手动崩溃</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B8%85%E7%90%86%E5%86%85%E5%AD%98"><span class="nav-number">5.2.</span> <span class="nav-text"> 清理内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%81%E7%94%A8-centos-7-%E7%B3%BB%E7%BB%9F%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0"><span class="nav-number">5.3.</span> <span class="nav-text"> 禁用 Centos 7 系统自动更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A3%81%E7%9B%98%E7%A9%BA%E9%97%B4"><span class="nav-number">5.4.</span> <span class="nav-text"> 磁盘空间</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#vmware"><span class="nav-number">6.</span> <span class="nav-text"> VMware</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3vmware-could-not-connect-ethernet0-to-virtual-network-devvmnet0"><span class="nav-number">6.1.</span> <span class="nav-text"> 解决VMWare - Could not connect ‘Ethernet0‘ to virtual network ‘&#x2F;dev&#x2F;vmnet0‘.</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#software-install"><span class="nav-number">7.</span> <span class="nav-text"> software install</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#clang-format"><span class="nav-number">7.1.</span> <span class="nav-text"> clang-format</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%91%E6%8E%A7%E7%B1%BB"><span class="nav-number">8.</span> <span class="nav-text"> 监控类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#sysdig"><span class="nav-number">8.1.</span> <span class="nav-text"> sysdig</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tools"><span class="nav-number">9.</span> <span class="nav-text"> TOOLS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pssh-%E8%BF%90%E7%BB%B4%E5%B7%A5%E5%85%B7"><span class="nav-number">9.1.</span> <span class="nav-text"> pssh 运维工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E8%A3%85%E6%97%B6%E9%97%B4"><span class="nav-number">9.2.</span> <span class="nav-text"> 伪装时间</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Zhihao Li"
+      src="https://s2.loli.net/2025/06/22/QdmPYD6bOKuSaW2.gif">
+  <p class="site-author-name" itemprop="name">Zhihao Li</p>
+  <div class="site-description" itemprop="description">分享点个人想分享的内容~</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">21</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <span class="exturl" data-url="bWFpbHRvOm5veEBpZW1vZS5jb20=" title="E-Mail → mailto:nox@iemoe.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</span>
+      </span>
+  </div>
+  <div class="cc-license animated" itemprop="license">
+    <span class="exturl cc-opacity" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><img src="https://cdnjs.cloudflare.com/ajax/libs/creativecommons-vocabulary/2020.11.3/assets/license_badges/small/by_nc_sa.svg" alt="Creative Commons"></span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.iemoe.com/2025/centos75-gnome-notebook/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://s2.loli.net/2025/06/22/QdmPYD6bOKuSaW2.gif">
+      <meta itemprop="name" content="Zhihao Li">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="nox blog">
+      <meta itemprop="description" content="分享点个人想分享的内容~">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="关于 Centos 7.5.1804 下的那些逼事 | nox blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于 Centos 7.5.1804 下的那些逼事
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-06-20 23:07:51" itemprop="dateCreated datePublished" datetime="2025-06-20T23:07:51+08:00">2025-06-20</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2025-06-23 13:44:27" itemprop="dateModified" datetime="2025-06-23T13:44:27+08:00">2025-06-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%BF%90%E7%BB%B4/" itemprop="url" rel="index"><span itemprop="name">运维</span></a>
+        </span>
+          ，
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ops/" itemprop="url" rel="index"><span itemprop="name">ops</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+</div>
+
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>老版本的系统一堆破事，又不能升级，只能使用老系统一致将就着用着。</p>
+<p>什么 NFS 出问题连带着 Gnome 卡住，什么动不动就抽风…</p>
+<p>本文包含了我从开始做运维到现在的所有经验，想到啥就写啥，能帮到你更好，帮不到也别放弃。很多东西中文互联网也搜不到，英文好的朋友倒还好，但是英文不好的也会比较吃瘪。</p>
+<span id="more"></span>
+<p>本次环境为：</p>
+<ul>
+<li>Centos 7.5.1804</li>
+<li>内核为 ISO 自带的内核（就不能做升级，就得用旧的，别问，问就是开发需要）</li>
+<li>NFS 为官方源 Centos 7.5.1804 能用的最新版</li>
+<li>NFS 服务器为 HDD 硬盘</li>
+<li>user home 目录在 nfs 上</li>
+<li>纯内网环境</li>
+</ul>
+</br>
+<h1 id="gnome-桌面卡死"><a class="markdownIt-Anchor" href="#gnome-桌面卡死"></a> Gnome 桌面卡死</h1>
+<p>这套系统运行起来，你将可能会遇到以下场景：</p>
+<ol>
+<li>NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死</li>
+<li>你用着用着，整个桌面卡死，运气好的时候他会自己重启，不会丢掉其他窗口和运行的进程（反之你只能重启VNC了</li>
+</ol>
+</br>
+<h2 id="第一种情况"><a class="markdownIt-Anchor" href="#第一种情况"></a> 第一种情况</h2>
+<p>遇到 NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死，使用以下方法重启桌面即可恢复</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">su - &lt;user&gt;</span><br><span class="line">export DISPLAY=:15</span><br><span class="line">gnome-shell --mode=classic --replace &amp; disown</span><br></pre></td></tr></table></figure>
+<p>应该就可以了</p>
+</br>
+<h2 id="第二种情况"><a class="markdownIt-Anchor" href="#第二种情况"></a> 第二种情况</h2>
+<p>忍着，他自己会恢复的，我也没辙</p>
+</br>
+<h1 id="yum-相关"><a class="markdownIt-Anchor" href="#yum-相关"></a> Yum 相关</h1>
+<p>跟 yum 包管理相关的，有很多其他的方法也能办到这事。我就用这个方法辣~</p>
+</br>
+<h2 id="rpm强制安装"><a class="markdownIt-Anchor" href="#rpm强制安装"></a> RPM强制安装</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -ivh --replacefiles --force --nodeps *.rpm</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="yum-仅下载软件包"><a class="markdownIt-Anchor" href="#yum-仅下载软件包"></a> yum 仅下载软件包</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install --downloadonly --downloaddir=/tmp/yumlocal &lt;package&gt;</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="cdrom"><a class="markdownIt-Anchor" href="#cdrom"></a> Cdrom</h2>
+<ol>
+<li>挂载CDROM</li>
+</ol>
+<p><code>mkdir -p /mnt/cdrom</code></p>
+<p><code>mount /dev/cdrom /mnt/cdrom</code></p>
+<ol start="2">
+<li>创建cdrom.repo文件</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat &gt;&gt; <span class="regexp">/etc/yum</span>.<span class="property">repos</span>.<span class="property">d</span>/cdrom.<span class="property">repo</span> &lt; <span class="variable constant_">EOF</span></span><br><span class="line">[cdrom]</span><br><span class="line">name=<span class="title class_">CentOS7</span> - cdrom</span><br><span class="line">baseurl=<span class="attr">file</span>:<span class="comment">///mnt/cdrom/</span></span><br><span class="line">enable=<span class="number">1</span></span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">gpgkey=<span class="attr">file</span>:<span class="comment">///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span></span><br><span class="line"><span class="variable constant_">EOF</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>测试查看cdrom的软件包列表</li>
+</ol>
+<p><code>yum --disablerepo=* --enablerepo=cdrom list</code></p>
+<ol start="4">
+<li>使用本地源安装</li>
+</ol>
+<p><code>yum --disablerepo=* --enablerepo=cdrom install -y httpd</code></p>
+</br>
+<h2 id="curl60-peers-certificate-issuer-is-not-recognized"><a class="markdownIt-Anchor" href="#curl60-peers-certificate-issuer-is-not-recognized"></a> curl#60 peer’s Certificate issuer is not recognized</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载证书：</span></span><br><span class="line">wget https://curl.se/ca/cacert.pem --no-check-certificate</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加证书:</span></span><br><span class="line">cat cacert.pem &gt;&gt; /etc/pki/tls/certs/ca-bundle.crt</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="authentication-is-required-to-set-the-network-proxy"><a class="markdownIt-Anchor" href="#authentication-is-required-to-set-the-network-proxy"></a> Authentication is required to set the network proxy</h2>
+<p>这个是使用 gnome 桌面隔三差五会弹出来的一个框，直接卸了他就好了，反之不升级系统留他没用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rpm -e gnome-packagekit</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="system"><a class="markdownIt-Anchor" href="#system"></a> system</h1>
+<p>系统配置或系统服务相关</p>
+</br>
+<h2 id="dmesg-无输出"><a class="markdownIt-Anchor" href="#dmesg-无输出"></a> dmesg 无输出</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart systemd-journald</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="与时间服务器同步"><a class="markdownIt-Anchor" href="#与时间服务器同步"></a> 与时间服务器同步</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntpdate -u 192.168.1.10</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="解决pyqt-undefined-symbolft_get_font_format-error"><a class="markdownIt-Anchor" href="#解决pyqt-undefined-symbolft_get_font_format-error"></a> 解决PyQt: undefined symbol:FT_Get_Font_Format Error</h2>
+<p>下载最新的<span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC5zYXZhbm5haC5nbnUub3JnL3JlbGVhc2VzL2ZyZWV0eXBlLw==">freetype<i class="fa fa-external-link-alt"></i></span>并安装</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tar -xf freetype-**.tar.gz</span><br><span class="line">cd freetype-**/</span><br><span class="line">mkdir bulid</span><br><span class="line">cd bulid</span><br><span class="line">../configure --prefix=/usr/lib/freetype</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>最后将此目录下的libfreetype.so.6 替换掉原先的libfreetype.so.6<br />
+然后运行程序，在UI上点击右键，不闪退啦。</p>
+<p>原文地址：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQxODg3OC9hcnRpY2xlL2RldGFpbHMvODk5NDY1MTI=">https://blog.csdn.net/weixin_38418878/article/details/89946512<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h2 id="使用-pssh-或其他运维工具关闭所有服务器的上报服务"><a class="markdownIt-Anchor" href="#使用-pssh-或其他运维工具关闭所有服务器的上报服务"></a> 使用 pssh 或其他运维工具关闭所有服务器的上报服务</h2>
+<p>因为 Centos 7.5 长时间运行在内网中，没办法访问互联网，这俩服务长时间运行会让 Centos 7.5 死机</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pssh -l root -h ~/hosts &#x27;systemctl disable abrtd.service&#x27;</span><br><span class="line">pssh -l root -h ~/hosts &#x27;systemctl disable abrt-ccpp.service&#x27;</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="shell"><a class="markdownIt-Anchor" href="#shell"></a> Shell</h1>
+<p><strong>常用shell命令</strong></p>
+</br>
+<h2 id="手动崩溃"><a class="markdownIt-Anchor" href="#手动崩溃"></a> 手动崩溃</h2>
+<p>就是为了生成 coredump 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -6 &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="清理内存"><a class="markdownIt-Anchor" href="#清理内存"></a> 清理内存</h2>
+<p>清理前可以使用 <code>sync</code> 同步内存</p>
+<p><strong>/proc/sys/vm/drop_caches</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> 3 &gt; /proc/sys/vm/drop_caches</span><br></pre></td></tr></table></figure>
+<p>要使用 <em>/proc/sys/vm/drop_caches</em>，你需要根据需要写入不同的值：</p>
+<ul>
+<li><strong>写入 1</strong>：释放页缓存。</li>
+<li><strong>写入 2</strong>：释放 slab 对象，包括目录项和索引节点。</li>
+<li><strong>写入 3</strong>：同时释放 slab 对象和页缓存。</li>
+<li>写入 4：手动还原释放。（有些系统是写入 0 ，但 Centos 7 是写入 4）</li>
+</ul>
+</br>
+<h2 id="禁用-centos-7-系统自动更新"><a class="markdownIt-Anchor" href="#禁用-centos-7-系统自动更新"></a> 禁用 Centos 7 系统自动更新</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查询状态</span></span><br><span class="line">systemctl status packagekit</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停用</span></span><br><span class="line">systemctl stop packagekit</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">禁止自启动</span></span><br><span class="line">systemctl mask packagekit</span><br><span class="line">  Created symlink from /etc/systemd/system/packagekit.service to /dev/null.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">卸载PackageKit</span></span><br><span class="line">yum remove PackageKit*</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="磁盘空间"><a class="markdownIt-Anchor" href="#磁盘空间"></a> 磁盘空间</h2>
+<p>保存遍历结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/bin/ncdu -q -e --exclude-kernfs -o /nfs/home-nfs/lzh/logs/ncdu_`date +%Y%m%d.txt` --exclude /nfs/home-nfs/lzh/logs/ncdu_`date +%Y%m%d`.txt /nfs &amp;</span><br></pre></td></tr></table></figure>
+<p>读取遍历结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ncdu -f ncdu.txt</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="vmware"><a class="markdownIt-Anchor" href="#vmware"></a> VMware</h1>
+<h2 id="解决vmware-could-not-connect-ethernet0-to-virtual-network-devvmnet0"><a class="markdownIt-Anchor" href="#解决vmware-could-not-connect-ethernet0-to-virtual-network-devvmnet0"></a> 解决VMWare - Could not connect ‘Ethernet0‘ to virtual network ‘/dev/vmnet0‘.</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo modprobe vmnet &amp;&amp; sudo vmware-networks --start</span><br><span class="line">sudo systemctl start vmware-networks.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sudo touch /etc/vmware/x</span><br><span class="line">sudo vmware-networks --migrate-network-settings /etc/vmware/x</span><br><span class="line">sudo rm /etc/vmware/x</span><br><span class="line"></span><br><span class="line">vmware-netcfg</span><br><span class="line">sudo modprobe vmnet</span><br><span class="line">sudo vmware-networks --start</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="software-install"><a class="markdownIt-Anchor" href="#software-install"></a> software install</h1>
+<ul>
+<li>clang-format</li>
+</ul>
+</br>
+<h2 id="clang-format"><a class="markdownIt-Anchor" href="#clang-format"></a> clang-format</h2>
+<p>centos 的yum仓库中并没有clang-format的安装包，需要更新repo源：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install centos-release-scl-rh</span><br></pre></td></tr></table></figure>
+<p>之后下载clang-format：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo yum install llvm-toolset-7-git-clang-format</span><br></pre></td></tr></table></figure>
+<p>默认安装目录为：<code>/opt/rh/llvm-toolset-7/root/usr/bin/</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/profile.d/clang.sh &lt;&lt; &quot;EOF&quot;</span><br><span class="line">PATH=$PATH:/opt/rh/llvm-toolset-7/root/usr/bin</span><br><span class="line">export PATH</span><br><span class="line">EOF</span><br><span class="line">cat &gt; /etc/profile.d/clang.csh &lt;&lt; &quot;EOF&quot;</span><br><span class="line">set path = ($path /opt/rh/llvm-toolset-7/root/usr/bin)</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<p>为已打开终端立即生效：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="监控类"><a class="markdownIt-Anchor" href="#监控类"></a> 监控类</h1>
+<p>系统监控类工具</p>
+<h2 id="sysdig"><a class="markdownIt-Anchor" href="#sysdig"></a> sysdig</h2>
+<p>#监控/磁盘  查看磁盘使用率最多的应用：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysdig -c topfiles_bytes</span><br></pre></td></tr></table></figure>
+<p>#监控/网速</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sysdig -c topprocs_net</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="tools"><a class="markdownIt-Anchor" href="#tools"></a> TOOLS</h1>
+<p>工具类</p>
+<h2 id="pssh-运维工具"><a class="markdownIt-Anchor" href="#pssh-运维工具"></a> pssh 运维工具</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pssh [ -i ] -l &lt;user&gt; -h &lt;hosts_list&gt; &lt;command&gt;</span><br></pre></td></tr></table></figure>
+<p>能用上的基本就这种命令，有域名也可以使用域名，最好是做免密再操作，想查看返回的消息，可以加 <code>-i</code> 。</p>
+<p>hosts_list 文件里基本上就是 ip 列表：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">node01</span><br><span class="line">node02</span><br><span class="line">node03</span><br><span class="line">192.168.1.11</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="伪装时间"><a class="markdownIt-Anchor" href="#伪装时间"></a> 伪装时间</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3dvbGZjdy9saWJmYWtldGltZS8=">https://github.com/wolfcw/libfaketime/<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LD_PRELOAD=/usr/local/lib/faketime/libfaketime.so.1</span><br><span class="line">FAKETIME_CACHE_DURATION=1</span><br><span class="line">FAKETIME_UPDATE_TIMESTAMP_FILE=1</span><br><span class="line">FAKETIME=@2021-12-30 10:01:01</span><br><span class="line">FAKETIME_SHARED=/faketime_sem_34 /faketime_shm_34</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          
+
+<div class="post-copyright">
+<ul>
+  <li class="post-copyright-author">
+      <strong>本文作者： </strong>Zhihao Li
+  </li>
+  <li class="post-copyright-link">
+      <strong>本文链接：</strong>
+      <a href="https://www.iemoe.com/2025/centos75-gnome-notebook/" title="关于 Centos 7.5.1804 下的那些逼事">https://www.iemoe.com/2025/centos75-gnome-notebook/</a>
+  </li>
+  <li class="post-copyright-license">
+      <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <span class="exturl" data-url="aHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMC9kZWVkLnpoLWhhbnM="><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</span> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/gnome/" rel="tag"><i class="fa fa-tag"></i> gnome</a>
+              <a href="/tags/nfs/" rel="tag"><i class="fa fa-tag"></i> nfs</a>
+              <a href="/tags/centos/" rel="tag"><i class="fa fa-tag"></i> centos</a>
+              <a href="/tags/centos-7-5-1804/" rel="tag"><i class="fa fa-tag"></i> centos 7.5.1804</a>
+              <a href="/tags/system/" rel="tag"><i class="fa fa-tag"></i> system</a>
+              <a href="/tags/systemctl/" rel="tag"><i class="fa fa-tag"></i> systemctl</a>
+              <a href="/tags/%E5%90%90%E6%A7%BD/" rel="tag"><i class="fa fa-tag"></i> 吐槽</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2025/docker-notebook/" rel="next" title="Docker 笔记">
+                  Docker 笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments gitalk-container"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2025</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Zhihao Li</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <span class="exturl" data-url="aHR0cHM6Ly9oZXhvLmlv">Hexo</span> & <span class="exturl" data-url="aHR0cHM6Ly90aGVtZS1uZXh0LmpzLm9yZw==">NexT.Gemini</span> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+  <a role="button" class="book-mark-link book-mark-link-fixed"></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.css" integrity="sha256-AJnUHL7dBv6PGaeyPQJcgQPDjt/Hn/PvYZde1iqfp8U=" crossorigin="anonymous">
+
+<script class="next-config" data-name="gitalk" type="application/json">{"enable":true,"github_id":"fengziyun","repo":"gitalk","client_id":"Ov23liUvHUlViAJrtTjV","client_secret":"5a691824a65605df67429eb408c6fba3d6f8ce5e","admin_user":"fengziyun","distraction_free_mode":true,"proxy":"https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token","language":"zh-CN","createIssueManually":true,"perPage":10,"adminUser":["fengziyun"],"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/gitalk/1.8.0/gitalk.min.js","integrity":"sha256-MVK9MGD/XJaGyIghSVrONSnoXoGh3IFxLw0zfvzpxR4="},"path_md5":"6165f02eab56bc0d2d43f98db4c0a87a"}</script>
+<script src="/js/third-party/comments/gitalk.js" defer></script>
+
+</body>
+</html>

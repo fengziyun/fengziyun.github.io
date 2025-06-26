@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Nginx Proxy Manager 反向代理企业微信机器人，并且不暴露 Webhook 地址</title>
+    <url>/2025/Nginx_Proxy_Manager_use/</url>
+    <content><![CDATA[<h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>当你需要在内网向企业微信推送消息，但又不想放行 <code>qyapi.weixin.qq.com</code> 的时候，应该有很多方法，我选择了通过 Nginx Proxy Manager 的容器进行反向代理。互联网有很多跟你将怎么用怎么用的，但最后还是得看后台日志一点一点调试摸索着，最后才成功，现在将方法教你。</p>
+<p>本篇文章只适用于我当前工作环境，若正是你需要的，那应该能帮助到你。如果有其他方法，也欢迎大佬在评论区分享自己的方法~</p>
+<span id="more"></span>
+</br>
+<h1 id="准备阶段"><a class="markdownIt-Anchor" href="#准备阶段"></a> 准备阶段</h1>
+<p>以下所有操作基本在 Linux 下完成。</p>
+<p>一台内网服务器: <code>192.168.1.100</code></p>
+<p>一台反代理服务器：<code>192.168.1.10</code></p>
+<p>一个企业微信机器人的 webhook ：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0000aaaa-aaaa-aaaa-aaaa-aaaaacccccaa</span><br></pre></td></tr></table></figure>
+<p>一个证书（包含密钥），可以自生成</p>
+<p>需要的环境：</p>
+<p>openssl：任意版本，能生成自签证书就行</p>
+<p>docker：可选，你要是动手能力强可以直接安装在宿主机内，docker 都不需要了</p>
+</br>
+<h2 id="原理"><a class="markdownIt-Anchor" href="#原理"></a> 原理</h2>
+<pre><code class="highlight mermaid">graph LR;
+内网 --&gt; 反向代理 --&gt; 企业微信机器人</code></pre>
+<p>内网服务器使用 CURL 发送消息：</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">url=<span class="string">&quot;http://192.168.1.10:30021/PYMSG&quot;</span></span><br><span class="line">header=<span class="string">&quot;&#x27;Content-Type:application/json&#x27;&quot;</span></span><br><span class="line"><span class="keyword">function</span> <span class="function"><span class="title">send_text</span></span>()&#123;</span><br><span class="line">    textmsg=<span class="string">&#x27;&#123;&quot;msgtype&quot;:&quot;markdown&quot;,&quot;markdown&quot;:&#123;&quot;content&quot;:&quot;&#x27;</span>$*<span class="string">&#x27;&quot;,&quot;mentioned_list&quot;:[&quot;&quot;]&#125;&#125;&#x27;</span></span><br><span class="line">    curl -s -H <span class="variable">$header</span> -d <span class="string">&quot;<span class="variable">$textmsg</span>&quot;</span> <span class="string">&quot;<span class="variable">$url</span>&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>反代理服务器转发请求到企业微信的 webhook 接口</p>
+</br>
+<h1 id="安装"><a class="markdownIt-Anchor" href="#安装"></a> 安装</h1>
+<p>Nginx Proxy Manager 官网</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9uZ2lueHByb3h5bWFuYWdlci5jb20v">https://nginxproxymanager.com/<i class="fa fa-external-link-alt"></i></span></p>
+<p>官网有文档，要是觉得麻烦就用官网给的安装手册，使用 docker compose 进行部署</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9uZ2lueHByb3h5bWFuYWdlci5jb20vc2V0dXAv">https://nginxproxymanager.com/setup/<i class="fa fa-external-link-alt"></i></span></p>
+<p>我的是 truenas 上直接部署的，大概是下面 <code>docker-compose.yml</code> 这样子吧</p>
+<figure class="highlight yaml"><table><tr><td class="code"><pre><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">app:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">&#x27;jc21/nginx-proxy-manager:latest&#x27;</span></span><br><span class="line">    <span class="attr">restart:</span> <span class="string">unless-stopped</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="comment"># These ports are in format &lt;host-port&gt;:&lt;container-port&gt;</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30021:80&#x27;</span> <span class="comment"># Public HTTP Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30022:443&#x27;</span> <span class="comment"># Public HTTPS Port</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">&#x27;30020:81&#x27;</span> <span class="comment"># Admin Web Port</span></span><br><span class="line">      <span class="comment"># Add any other Stream port you want to expose</span></span><br><span class="line">      <span class="comment"># - &#x27;21:21&#x27; # FTP</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="comment"># Uncomment this if you want to change the location of</span></span><br><span class="line">      <span class="comment"># the SQLite DB file within the container</span></span><br><span class="line">      <span class="comment"># DB_SQLITE_FILE: &quot;/data/database.sqlite&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="comment"># Uncomment this if IPv6 is not enabled on your host</span></span><br><span class="line">      <span class="comment"># DISABLE_IPV6: &#x27;true&#x27;</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./data:/data</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./letsencrypt:/etc/letsencrypt</span></span><br></pre></td></tr></table></figure>
+<p>管理页面的端口是：30020</p>
+<p>http 端口是：30021，https 端口是 30022</p>
+</br>
+<p>然后使用：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker compose up -d</span><br></pre></td></tr></table></figure>
+<p>启动即可。没有额外的安装步骤，直接这么来就好了。</p>
+</br>
+<h1 id="生成证书"><a class="markdownIt-Anchor" href="#生成证书"></a> 生成证书</h1>
+<p>因为企业微信机器人是 https 协议，反代理一般都需要证书。</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">私钥生成</span></span><br><span class="line">openssl genrsa -out ca-private.key 4096</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根证书生成</span></span><br><span class="line">openssl req -new -x509 -key ca-private.key -out ca.crt -days 3650</span><br></pre></td></tr></table></figure>
+<p>将证书导入 Nginx Proxy Manager</p>
+<img data-src="https://s2.loli.net/2025/06/25/2LeKdrMq6mOiIRb.png" alt="image-20250625112824512" style="zoom:50%;" />
+<img data-src="https://s2.loli.net/2025/06/25/Dc3xz6vbNFSQIs2.png" alt="image-20250625113050036" style="zoom: 67%;" />
+<p>点击 SAVE 保存即可。</p>
+</br>
+<h1 id="配置-proxy"><a class="markdownIt-Anchor" href="#配置-proxy"></a> 配置 proxy</h1>
+<img data-src="https://s2.loli.net/2025/06/25/2a4SiNElfgAvkCV.png" alt="image-20250625114941654" style="zoom:50%;" />
+<img data-src="https://s2.loli.net/2025/06/25/N29T3ItVDFbgsPH.png" alt="image-20250625114520051" style="zoom:67%;" />
+<p>这样就配置好一半了</p>
+</br>
+<h2 id="高级配置"><a class="markdownIt-Anchor" href="#高级配置"></a> 高级配置</h2>
+<p>使用 <code>location</code> 创建不通的别名，像我一开始的 <code>http://192.168.1.10:30021/PYMSG</code> 使用了 <code>PYMSG</code> 这个别名，在高级设置里是这个样子的</p>
+<figure class="highlight nginx"><table><tr><td class="code"><pre><span class="line"><span class="section">location</span> / &#123;</span><br><span class="line">    <span class="attribute">return</span> <span class="number">404</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="section">location</span> /PYMSG &#123;</span><br><span class="line">    <span class="attribute">proxy_pass</span> https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=0000aaaa-aaaa-aaaa-aaaa-aaaaacccccaa;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> Host qyapi.weixin.qq.com;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Real-IP <span class="variable">$remote_addr</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-For <span class="variable">$proxy_add_x_forwarded_for</span>;</span><br><span class="line">    <span class="attribute">proxy_set_header</span> X-Forwarded-Proto <span class="variable">$scheme</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>proxy_pass</code> ：配置企业微信机器人的 webhook 地址，这样就完成了，点击 save 保存后，在内网就可以直接使用 curl 推送消息了。</p>
+<div class="note danger"><p>注意，一次不能推送超过 4096 字节的消息，超过的话请自行截断。</p>
+</div>
+</br>
+<p>以此类推，想设置多少个别名随意，基本按照这个方式就可以正常使用了。学会后可以直接去看容器里的 nginx 配置，学学他的配置文件，后续都可以不用这个 Nginx Proxy Manager 容器了，自己下个 nginx 容器，自己做反代理了。</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>ops</category>
+      </categories>
+      <tags>
+        <tag>nginx</tag>
+        <tag>proxy</tag>
+        <tag>内网</tag>
+        <tag>消息推送</tag>
+        <tag>企业微信</tag>
+        <tag>bot</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>关于 Centos 7.5.1804 下的那些逼事</title>
+    <url>/2025/centos75-gnome-notebook/</url>
+    <content><![CDATA[<h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>老版本的系统一堆破事，又不能升级，只能使用老系统一致将就着用着。</p>
+<p>什么 NFS 出问题连带着 Gnome 卡住，什么动不动就抽风…</p>
+<p>本文包含了我从开始做运维到现在的所有经验，想到啥就写啥，能帮到你更好，帮不到也别放弃。很多东西中文互联网也搜不到，英文好的朋友倒还好，但是英文不好的也会比较吃瘪。</p>
+<span id="more"></span>
+<p>本次环境为：</p>
+<ul>
+<li>Centos 7.5.1804</li>
+<li>内核为 ISO 自带的内核（就不能做升级，就得用旧的，别问，问就是开发需要）</li>
+<li>NFS 为官方源 Centos 7.5.1804 能用的最新版</li>
+<li>NFS 服务器为 HDD 硬盘</li>
+<li>user home 目录在 nfs 上</li>
+<li>纯内网环境</li>
+</ul>
+</br>
+<h1 id="gnome-桌面卡死"><a class="markdownIt-Anchor" href="#gnome-桌面卡死"></a> Gnome 桌面卡死</h1>
+<p>这套系统运行起来，你将可能会遇到以下场景：</p>
+<ol>
+<li>NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死</li>
+<li>你用着用着，整个桌面卡死，运气好的时候他会自己重启，不会丢掉其他窗口和运行的进程（反之你只能重启VNC了</li>
+</ol>
+</br>
+<h2 id="第一种情况"><a class="markdownIt-Anchor" href="#第一种情况"></a> 第一种情况</h2>
+<p>遇到 NFS 服务器卡死，所有用户的 Gnome 桌面都会卡死，使用以下方法重启桌面即可恢复</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">su - &lt;user&gt;</span><br><span class="line">export DISPLAY=:15</span><br><span class="line">gnome-shell --mode=classic --replace &amp; disown</span><br></pre></td></tr></table></figure>
+<p>应该就可以了</p>
+</br>
+<h2 id="第二种情况"><a class="markdownIt-Anchor" href="#第二种情况"></a> 第二种情况</h2>
+<p>忍着，他自己会恢复的，我也没辙</p>
+</br>
+<h1 id="yum-相关"><a class="markdownIt-Anchor" href="#yum-相关"></a> Yum 相关</h1>
+<p>跟 yum 包管理相关的，有很多其他的方法也能办到这事。我就用这个方法辣~</p>
+</br>
+<h2 id="rpm强制安装"><a class="markdownIt-Anchor" href="#rpm强制安装"></a> RPM强制安装</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rpm -ivh --replacefiles --force --nodeps *.rpm</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="yum-仅下载软件包"><a class="markdownIt-Anchor" href="#yum-仅下载软件包"></a> yum 仅下载软件包</h2>
+<figure class="highlight sh"><table><tr><td class="code"><pre><span class="line">yum install --downloadonly --downloaddir=/tmp/yumlocal &lt;package&gt;</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="cdrom"><a class="markdownIt-Anchor" href="#cdrom"></a> Cdrom</h2>
+<ol>
+<li>挂载CDROM</li>
+</ol>
+<p><code>mkdir -p /mnt/cdrom</code></p>
+<p><code>mount /dev/cdrom /mnt/cdrom</code></p>
+<ol start="2">
+<li>创建cdrom.repo文件</li>
+</ol>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">cat &gt;&gt; <span class="regexp">/etc/yum</span>.<span class="property">repos</span>.<span class="property">d</span>/cdrom.<span class="property">repo</span> &lt; <span class="variable constant_">EOF</span></span><br><span class="line">[cdrom]</span><br><span class="line">name=<span class="title class_">CentOS7</span> - cdrom</span><br><span class="line">baseurl=<span class="attr">file</span>:<span class="comment">///mnt/cdrom/</span></span><br><span class="line">enable=<span class="number">1</span></span><br><span class="line">gpgcheck=<span class="number">0</span></span><br><span class="line">gpgkey=<span class="attr">file</span>:<span class="comment">///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7</span></span><br><span class="line"><span class="variable constant_">EOF</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>测试查看cdrom的软件包列表</li>
+</ol>
+<p><code>yum --disablerepo=* --enablerepo=cdrom list</code></p>
+<ol start="4">
+<li>使用本地源安装</li>
+</ol>
+<p><code>yum --disablerepo=* --enablerepo=cdrom install -y httpd</code></p>
+</br>
+<h2 id="curl60-peers-certificate-issuer-is-not-recognized"><a class="markdownIt-Anchor" href="#curl60-peers-certificate-issuer-is-not-recognized"></a> curl#60 peer’s Certificate issuer is not recognized</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">下载证书：</span></span><br><span class="line">wget https://curl.se/ca/cacert.pem --no-check-certificate</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">添加证书:</span></span><br><span class="line">cat cacert.pem &gt;&gt; /etc/pki/tls/certs/ca-bundle.crt</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="authentication-is-required-to-set-the-network-proxy"><a class="markdownIt-Anchor" href="#authentication-is-required-to-set-the-network-proxy"></a> Authentication is required to set the network proxy</h2>
+<p>这个是使用 gnome 桌面隔三差五会弹出来的一个框，直接卸了他就好了，反之不升级系统留他没用</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">rpm -e gnome-packagekit</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="system"><a class="markdownIt-Anchor" href="#system"></a> system</h1>
+<p>系统配置或系统服务相关</p>
+</br>
+<h2 id="dmesg-无输出"><a class="markdownIt-Anchor" href="#dmesg-无输出"></a> dmesg 无输出</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">systemctl restart systemd-journald</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="与时间服务器同步"><a class="markdownIt-Anchor" href="#与时间服务器同步"></a> 与时间服务器同步</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ntpdate -u 192.168.1.10</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="解决pyqt-undefined-symbolft_get_font_format-error"><a class="markdownIt-Anchor" href="#解决pyqt-undefined-symbolft_get_font_format-error"></a> 解决PyQt: undefined symbol:FT_Get_Font_Format Error</h2>
+<p>下载最新的<span class="exturl" data-url="aHR0cHM6Ly9kb3dubG9hZC5zYXZhbm5haC5nbnUub3JnL3JlbGVhc2VzL2ZyZWV0eXBlLw==">freetype<i class="fa fa-external-link-alt"></i></span>并安装</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">tar -xf freetype-**.tar.gz</span><br><span class="line">cd freetype-**/</span><br><span class="line">mkdir bulid</span><br><span class="line">cd bulid</span><br><span class="line">../configure --prefix=/usr/lib/freetype</span><br><span class="line">make</span><br><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p>最后将此目录下的libfreetype.so.6 替换掉原先的libfreetype.so.6<br />
+然后运行程序，在UI上点击右键，不闪退啦。</p>
+<p>原文地址：<span class="exturl" data-url="aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQxODg3OC9hcnRpY2xlL2RldGFpbHMvODk5NDY1MTI=">https://blog.csdn.net/weixin_38418878/article/details/89946512<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h2 id="使用-pssh-或其他运维工具关闭所有服务器的上报服务"><a class="markdownIt-Anchor" href="#使用-pssh-或其他运维工具关闭所有服务器的上报服务"></a> 使用 pssh 或其他运维工具关闭所有服务器的上报服务</h2>
+<p>因为 Centos 7.5 长时间运行在内网中，没办法访问互联网，这俩服务长时间运行会让 Centos 7.5 死机</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pssh -l root -h ~/hosts &#x27;systemctl disable abrtd.service&#x27;</span><br><span class="line">pssh -l root -h ~/hosts &#x27;systemctl disable abrt-ccpp.service&#x27;</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="shell"><a class="markdownIt-Anchor" href="#shell"></a> Shell</h1>
+<p><strong>常用shell命令</strong></p>
+</br>
+<h2 id="手动崩溃"><a class="markdownIt-Anchor" href="#手动崩溃"></a> 手动崩溃</h2>
+<p>就是为了生成 coredump 文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">kill -6 &lt;pid&gt;</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="清理内存"><a class="markdownIt-Anchor" href="#清理内存"></a> 清理内存</h2>
+<p>清理前可以使用 <code>sync</code> 同步内存</p>
+<p><strong>/proc/sys/vm/drop_caches</strong></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> 3 &gt; /proc/sys/vm/drop_caches</span><br></pre></td></tr></table></figure>
+<p>要使用 <em>/proc/sys/vm/drop_caches</em>，你需要根据需要写入不同的值：</p>
+<ul>
+<li><strong>写入 1</strong>：释放页缓存。</li>
+<li><strong>写入 2</strong>：释放 slab 对象，包括目录项和索引节点。</li>
+<li><strong>写入 3</strong>：同时释放 slab 对象和页缓存。</li>
+<li>写入 4：手动还原释放。（有些系统是写入 0 ，但 Centos 7 是写入 4）</li>
+</ul>
+</br>
+<h2 id="禁用-centos-7-系统自动更新"><a class="markdownIt-Anchor" href="#禁用-centos-7-系统自动更新"></a> 禁用 Centos 7 系统自动更新</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">查询状态</span></span><br><span class="line">systemctl status packagekit</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停用</span></span><br><span class="line">systemctl stop packagekit</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">禁止自启动</span></span><br><span class="line">systemctl mask packagekit</span><br><span class="line">  Created symlink from /etc/systemd/system/packagekit.service to /dev/null.</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">卸载PackageKit</span></span><br><span class="line">yum remove PackageKit*</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="磁盘空间"><a class="markdownIt-Anchor" href="#磁盘空间"></a> 磁盘空间</h2>
+<p>保存遍历结果</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">/usr/bin/ncdu -q -e --exclude-kernfs -o /nfs/home-nfs/lzh/logs/ncdu_`date +%Y%m%d.txt` --exclude /nfs/home-nfs/lzh/logs/ncdu_`date +%Y%m%d`.txt /nfs &amp;</span><br></pre></td></tr></table></figure>
+<p>读取遍历结果</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">ncdu -f ncdu.txt</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="vmware"><a class="markdownIt-Anchor" href="#vmware"></a> VMware</h1>
+<h2 id="解决vmware-could-not-connect-ethernet0-to-virtual-network-devvmnet0"><a class="markdownIt-Anchor" href="#解决vmware-could-not-connect-ethernet0-to-virtual-network-devvmnet0"></a> 解决VMWare - Could not connect ‘Ethernet0‘ to virtual network ‘/dev/vmnet0‘.</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo modprobe vmnet &amp;&amp; sudo vmware-networks --start</span><br><span class="line">sudo systemctl start vmware-networks.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo touch /etc/vmware/x</span><br><span class="line">sudo vmware-networks --migrate-network-settings /etc/vmware/x</span><br><span class="line">sudo rm /etc/vmware/x</span><br><span class="line"></span><br><span class="line">vmware-netcfg</span><br><span class="line">sudo modprobe vmnet</span><br><span class="line">sudo vmware-networks --start</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="software-install"><a class="markdownIt-Anchor" href="#software-install"></a> software install</h1>
+<ul>
+<li>clang-format</li>
+</ul>
+</br>
+<h2 id="clang-format"><a class="markdownIt-Anchor" href="#clang-format"></a> clang-format</h2>
+<p>centos 的yum仓库中并没有clang-format的安装包，需要更新repo源：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install centos-release-scl-rh</span><br></pre></td></tr></table></figure>
+<p>之后下载clang-format：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install llvm-toolset-7-git-clang-format</span><br></pre></td></tr></table></figure>
+<p>默认安装目录为：<code>/opt/rh/llvm-toolset-7/root/usr/bin/</code></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat &gt; /etc/profile.d/clang.sh &lt;&lt; &quot;EOF&quot;</span><br><span class="line">PATH=$PATH:/opt/rh/llvm-toolset-7/root/usr/bin</span><br><span class="line">export PATH</span><br><span class="line">EOF</span><br><span class="line">cat &gt; /etc/profile.d/clang.csh &lt;&lt; &quot;EOF&quot;</span><br><span class="line">set path = ($path /opt/rh/llvm-toolset-7/root/usr/bin)</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<p>为已打开终端立即生效：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="监控类"><a class="markdownIt-Anchor" href="#监控类"></a> 监控类</h1>
+<p>系统监控类工具</p>
+<h2 id="sysdig"><a class="markdownIt-Anchor" href="#sysdig"></a> sysdig</h2>
+<p>#监控/磁盘  查看磁盘使用率最多的应用：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sysdig -c topfiles_bytes</span><br></pre></td></tr></table></figure>
+<p>#监控/网速</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sysdig -c topprocs_net</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="tools"><a class="markdownIt-Anchor" href="#tools"></a> TOOLS</h1>
+<p>工具类</p>
+<h2 id="pssh-运维工具"><a class="markdownIt-Anchor" href="#pssh-运维工具"></a> pssh 运维工具</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">pssh [ -i ] -l &lt;user&gt; -h &lt;hosts_list&gt; &lt;command&gt;</span><br></pre></td></tr></table></figure>
+<p>能用上的基本就这种命令，有域名也可以使用域名，最好是做免密再操作，想查看返回的消息，可以加 <code>-i</code> 。</p>
+<p>hosts_list 文件里基本上就是 ip 列表：</p>
+<figure class="highlight text"><table><tr><td class="code"><pre><span class="line">node01</span><br><span class="line">node02</span><br><span class="line">node03</span><br><span class="line">192.168.1.11</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="伪装时间"><a class="markdownIt-Anchor" href="#伪装时间"></a> 伪装时间</h2>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3dvbGZjdy9saWJmYWtldGltZS8=">https://github.com/wolfcw/libfaketime/<i class="fa fa-external-link-alt"></i></span></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">LD_PRELOAD=/usr/local/lib/faketime/libfaketime.so.1</span><br><span class="line">FAKETIME_CACHE_DURATION=1</span><br><span class="line">FAKETIME_UPDATE_TIMESTAMP_FILE=1</span><br><span class="line">FAKETIME=@2021-12-30 10:01:01</span><br><span class="line">FAKETIME_SHARED=/faketime_sem_34 /faketime_shm_34</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>运维</category>
+        <category>ops</category>
+      </categories>
+      <tags>
+        <tag>gnome</tag>
+        <tag>nfs</tag>
+        <tag>centos</tag>
+        <tag>centos 7.5.1804</tag>
+        <tag>system</tag>
+        <tag>systemctl</tag>
+        <tag>吐槽</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Docker 笔记</title>
+    <url>/2025/docker-notebook/</url>
+    <content><![CDATA[<h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>老系统做 docker 还是太勉强了，但是很多功能又只有容器能很方便的做到。后面才打算学 padman ，但这是后面的事了，现在就先忍忍用 docker 吧。</p>
+<span id="more"></span>
+<h1 id="docker"><a class="markdownIt-Anchor" href="#docker"></a> docker</h1>
+<p>docker 安装与初始化相关的内容，还有 docker 容器制作命令。好多没写，只是我以前笔记的内容而已</p>
+</br>
+<h2 id="install-init"><a class="markdownIt-Anchor" href="#install-init"></a> Install &amp; init</h2>
+<p>软件园与Hub加速地址：<span class="exturl" data-url="aHR0cDovL21pcnJvcnMudXN0Yy5lZHUuY24v">http://mirrors.ustc.edu.cn/<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h3 id="install"><a class="markdownIt-Anchor" href="#install"></a> Install</h3>
+<p>参照官网给出的安装步骤：<span class="exturl" data-url="aHR0cHM6Ly9kb2NzLmRvY2tlci5jb20vZW5naW5lL2luc3RhbGwvY2VudG9zLw==">https://docs.docker.com/engine/install/centos/<i class="fa fa-external-link-alt"></i></span></p>
+<p><strong>卸载旧docker</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum remove docker \</span><br><span class="line">                 docker-client \</span><br><span class="line">                 docker-client-latest \</span><br><span class="line">                 docker-common \</span><br><span class="line">                 docker-latest \</span><br><span class="line">                 docker-latest-logrotate \</span><br><span class="line">                 docker-logrotate \</span><br><span class="line">                 docker-engine</span><br></pre></td></tr></table></figure>
+<p><strong>安装环境</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo yum install -y yum-utils</span><br><span class="line">sudo yum-config-manager \</span><br><span class="line">   --add-repo \</span><br><span class="line">   https://mirrors.ustc.edu.cn/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+<p><strong>替换官方软件源</strong></p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">sudo sed -e &#x27;s|^baseurl=https://download.docker.com|baseurl=https://mirrors.ustc.edu.cn/docker-ce|g&#x27; \</span><br><span class="line">                 -i.bak \</span><br><span class="line">                 /etc/yum.repos.d/docker-ce.repo</span><br></pre></td></tr></table></figure>
+</br>
+<h2 id="docker-build"><a class="markdownIt-Anchor" href="#docker-build"></a> docker build</h2>
+<p>一键清理 Build Cache 缓存命令：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker builder prune</span><br></pre></td></tr></table></figure>
+<p>如果你希望保留最近一定时间的缓存，删除时长更久的缓存，可以通过添加 --filter 参数实现，例如保留最近10天的缓存示例命令如下：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker builder prune --filter &#x27;until=240h&#x27;</span><br></pre></td></tr></table></figure>
+</br>
+<p>另外，命令 <code>docker system prune</code> 可以用于清理磁盘，删除关闭的容器、无用的数据卷和网络，以及dangling镜像（即无tag的镜像）。</p>
+<p>添加参数 <code>docker system prune -a</code> 清理得更加彻底，可以将没有容器使用Docker镜像都删掉。</p>
+</br>
+<h1 id="portainerio"><a class="markdownIt-Anchor" href="#portainerio"></a> <span class="exturl" data-url="aHR0cDovL1BvcnRhaW5lci5pbw==">Portainer.io<i class="fa fa-external-link-alt"></i></span></h1>
+<h2 id="节点-docker-管理"><a class="markdownIt-Anchor" href="#节点-docker-管理"></a> 节点 docker 管理</h2>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run -d \</span><br><span class="line">  -p 9001:9001 \</span><br><span class="line">  --name portainer_agent \</span><br><span class="line">  --restart=always \</span><br><span class="line">  -v /var/run/docker.sock:/var/run/docker.sock \</span><br><span class="line">  -v /var/lib/docker/volumes:/var/lib/docker/volumes \</span><br><span class="line">  -v /:/host \</span><br><span class="line">  portainer/agent:2.21.1</span><br></pre></td></tr></table></figure>
+</br>
+<h1 id="jenkins-容器"><a class="markdownIt-Anchor" href="#jenkins-容器"></a> Jenkins 容器</h1>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">docker run -d -p 8080:8080 -p 50000:50000 \</span><br><span class="line">-v /usr/local/jenkins:/var/jenkins_home \</span><br><span class="line">--name myjenkins jenkins/jenkins:lts</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>运维</category>
+        <category>ops</category>
+      </categories>
+      <tags>
+        <tag>centos</tag>
+        <tag>docker</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Edge常用配置与优化</title>
+    <url>/2025/edge-notebook%20/</url>
+    <content><![CDATA[<h1 id="摘要"><a class="markdownIt-Anchor" href="#摘要"></a> 摘要</h1>
+<p>装机必备，每次重装系统或者用新系统都得重新装一遍，麻烦的很，干脆在这个笔记里面都写出来，大家用起来也方便。这篇若是没有你需要的，那估计就是我没使用过那类软件或者插件或是脚本~</p>
+<span id="more"></span>
+<h1 id="插件类"><a class="markdownIt-Anchor" href="#插件类"></a> 插件类</h1>
+<blockquote>
+<p>里面的插件基本都是 edge 和 chrome 的，账号同步能全部同步过来，插件里面的设置就没办法同步了，但是插件能同步也不错~</p>
+</blockquote>
+</br>
+<h2 id="edge-插件商店"><a class="markdownIt-Anchor" href="#edge-插件商店"></a> edge 插件商店</h2>
+<blockquote>
+<p>edge 自己的插件商店获取的插件。</p>
+</blockquote>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/cFjARDdzZQEMstq.png" alt="img" style="width:40px;float: left;" />
+<p><strong>ACG助手 - 提供视频下载消息推送</strong></p>
+<p>b站视频下载、直播串流下载、动态消息和站内信消息推送、页面信息聚合等各种个性化功能的工具集</p>
+<p>ID：fcfebhekhbkhjjimonjmbgmkbclheaoh</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9mY2ZlYmhla2hia2hqamltb25qbWJnbWtiY2xoZWFvaA==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/QpqwE5CdcK6iSxP.png" alt="img" style="width:40px;float: left;" />
+<p><strong>AdGuard浏览器助手</strong></p>
+<p>用于 AdGuard 桌面端应用程序的扩展。直接从浏览器管理过滤，轻按几个键就可以隐藏恼人的元素。</p>
+<p>ID：calilkfbhgibagenlbchfbiafnacldki</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9jYWxpbGtmYmhnaWJhZ2VubGJjaGZiaWFmbmFjbGRraQ==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/F9KLj7gGXdWZNpQ.png" alt="img" style="width:40px;float: left;" />
+<p><strong>Bitwarden 密码管理器</strong></p>
+<p>无论是在家中、工作中还是在旅途中，Bitwarden 都可以轻松地保护您的所有密码、通行密钥和敏感信息。</p>
+<blockquote>
+<p>注：我自己有 vaultwarden 作为服务器提供密码服务，不用官方的。</p>
+</blockquote>
+<p>ID：jbkfoedolllekgbhcbcoahefnbanhhlh</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9qYmtmb2Vkb2xsbGVrZ2JoY2Jjb2FoZWZuYmFuaGhsaA==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/I5R7uGW9QpswmCq.png" alt="img" style="width:40px;float: left;" />
+<p><strong>Cookie-Editor</strong></p>
+<p>Simple yet powerful Cookie Editor that allow you to quickly create, edit and delete cookies without leaving your tab.</p>
+<p>ID：neaplmfkghagebokkhpjpoebhdledlfi</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9uZWFwbG1ma2doYWdlYm9ra2hwanBvZWJoZGxlZGxmaQ==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/jgvemKIkFsVDubU.png" alt="img" style="width:40px;float: left;" />
+<p><strong>User-Agent Switcher and Manager</strong></p>
+<p>欺骗性网站试图收集有关你的网页导航的信息，以提供你可能不想要的独特内容</p>
+<p>ID：cnjkedgepfdpdbnepgmajmmjdjkjnifa</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9jbmprZWRnZXBmZHBkYm5lcGdtYWptbWpkamtqbmlmYQ==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/hy5eBmlPgYRQZxV.png" alt="img" style="width:40px;float: left;" />
+<p><strong>图片助手(ImageAssistant) 批量图片下载器</strong></p>
+<p>一款用于嗅探、分析网页图片并提供批量下载等功能的浏览器扩展程序。</p>
+<p>ID：odphnbhiddhdpoccbialllejaajemdio</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9vZHBobmJoaWRkaGRwb2NjYmlhbGxsZWphYWplbWRpbw==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/es8ScROFxlQ1XkW.png" alt="img" style="width:40px;float: left;" />
+<p><strong>篡改猴</strong></p>
+<p>使用用户脚本自由地改变网络</p>
+<p>ID：iikmkjmpaadaobahmlepeloendndfphd</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9paWtta2ptcGFhZGFvYmFobWxlcGVsb2VuZG5kZnBoZA==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/NIzOjTZEAMwQ2v6.png" alt="img" style="width:40px;float: left;" />
+<p><strong>购物党自动比价工具-AI看差评和商品对比</strong></p>
+<p>浏览商品页面时，自动查询180天历史价格、比较同款商品的全网最低价、提示立减红包和隐藏优惠券、AI自动帮你看差评、一旦降价还能通过微信提醒你！</p>
+<p>ID：pngicgippofneelinabebobnkpmdiphn</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9wbmdpY2dpcHBvZm5lZWxpbmFiZWJvYm5rcG1kaXBobg==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/zIEXgcYs269jiOe.png" alt="img" style="width:40px;float: left;" />
+<p><strong>青柠起始页</strong></p>
+<p>一个简洁、美观、实用的浏览器起始页。此为青柠起始页官方扩展。</p>
+<blockquote>
+<p>注：这玩意我就没开启过，之前还觉得有意思，但是在云桌面上使用简直糟糕透顶，还不能关闭动画，为了装逼而装逼</p>
+</blockquote>
+<p>ID：pcpnigdkpcgemocnjhebmajldpjlbeom</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9taWNyb3NvZnRlZGdlLm1pY3Jvc29mdC5jb20vYWRkb25zL2RldGFpbC9wY3BuaWdka3BjZ2Vtb2NuamhlYm1hamxkcGpsYmVvbQ==">Edge-addons-page<i class="fa fa-external-link-alt"></i></span></p>
+<p></br></br></p>
+<h2 id="来自其他源-google-插件商店"><a class="markdownIt-Anchor" href="#来自其他源-google-插件商店"></a> 来自其他源（ google 插件商店</h2>
+<blockquote>
+<p>谷歌商城的一些插件，edge同样可以使用</p>
+</blockquote>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/2hOiaYzPDuB13Td.png" alt="img" style="width:40px;float: left;" />
+<p><strong>GoFullPage - Full Page Screen Capture</strong></p>
+<p>完整可靠地捕获当前页面的屏幕截图-无需请求任何额外的权限！</p>
+<p>ID：fdpohaocaechififmbbbbbknoalclacl</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWV3ZWJzdG9yZS5nb29nbGUuY29tL2RldGFpbC9mZHBvaGFvY2FlY2hpZmlmbWJiYmJia25vYWxjbGFjbA==">chrome-store-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/ps5j3R6vdbUOXWi.png" alt="img" style="width:40px;float: left;" />
+<p><strong>HackBar</strong></p>
+<p>A browser extension for Penetration Testing</p>
+<p>ID：ginpbkfigcoaokgflihfhhmglmbchinc</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWV3ZWJzdG9yZS5nb29nbGUuY29tL2RldGFpbC9naW5wYmtmaWdjb2Fva2dmbGloZmhobWdsbWJjaGluYw==">chrome-store-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/C6LyvUiZkQJ3nR7.png" alt="img" style="width:40px;float: left;" />
+<p><strong>Proxy SwitchyOmega</strong></p>
+<p>轻松快捷地管理和切换多个代理设置。</p>
+<p>ID：padekgcemlokbadohgkifijomclgjgif</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWV3ZWJzdG9yZS5nb29nbGUuY29tL2RldGFpbC9wYWRla2djZW1sb2tiYWRvaGdraWZpam9tY2xnamdpZg==">chrome-store-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/fFC4r2kD7Khl6QN.png" alt="img" style="width:40px;float: left;" />
+<p><strong>Shodan</strong></p>
+<p>The Shodan plugin tells you where the website is hosted (country, city), who owns the IP and what other services/ ports are open.</p>
+<p>ID：jjalcfnidlmpjhdfepjhjbhnhkbgleap</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWV3ZWJzdG9yZS5nb29nbGUuY29tL2RldGFpbC9qamFsY2ZuaWRsbXBqaGRmZXBqaGpiaG5oa2JnbGVhcA==">chrome-store-page<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<img data-src="https://s2.loli.net/2025/06/22/doZbzlQejyNSaqU.png" alt="img" style="width:40px;float: left;" />
+<p><strong>X-Forwarded-For Header</strong></p>
+<p>This extension allows you quickly to set the X-Forwarded-For HTTP Header</p>
+<p>ID：hkghghbnihliadkabmlcmcgmffllglin</p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9jaHJvbWV3ZWJzdG9yZS5nb29nbGUuY29tL2RldGFpbC9oa2doZ2hibmlobGlhZGthYm1sY21jZ21mZmxsZ2xpbg==">chrome-store-page<i class="fa fa-external-link-alt"></i></span></p>
+<p></br></br></p>
+<h1 id="油猴脚本"><a class="markdownIt-Anchor" href="#油猴脚本"></a> 油猴脚本</h1>
+<p>油猴里使用的一些脚本，包括使用的设置都在这里了~</p>
+</br>
+<p><strong>「CSDNGreener」🍃CSDN广告完全过滤|免登录|个性化排版|最强老牌脚本|持续更新</strong></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9ncmVhc3lmb3JrLm9yZy96aC1DTi9zY3JpcHRzLzM3ODM1MQ==">Greasy fork script page<i class="fa fa-external-link-alt"></i></span></p>
+<p>脚本内设置：</p>
+<p>1x1 黑色像素，用来遮住那些傻逼CSDN背景特效</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAEALAAAAAABAAEAAAICRAEAOw==</span><br></pre></td></tr></table></figure>
+<p>足够了，其他都够用~</p>
+</br>
+<p><strong>bilibili potplayer 插件</strong></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoZW4zMTAvQmlsaWJpbGlQb3RQbGF5ZXI=">github page<i class="fa fa-external-link-alt"></i></span></p>
+<p>适用于 PotPlayer 的 Bilibili 插件。如果配合<span class="exturl" data-url="aHR0cHM6Ly9ncmVhc3lmb3JrLm9yZy96aC1DTi9zY3JpcHRzLzQ2MTgwMC1iaWxpYmlsaXBvdHBsYXllcg==">油猴脚本<i class="fa fa-external-link-alt"></i></span>，可以直接在网页打开 PotPlayer 进行播放</p>
+<p>用什么 edge 看视频和直播，动不动就抽风。用 potplayer 呀~！</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>日常</category>
+      </categories>
+      <tags>
+        <tag>edge</tag>
+        <tag>浏览器</tag>
+        <tag>插件</tag>
+        <tag>油猴</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>日常软件推荐~</title>
+    <url>/2025/software-share/</url>
+    <content><![CDATA[<h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+<p>常用的软件推荐，告别 CSDN。</p>
+<span id="more"></span>
+</br>
+<h1 id="开发类软件"><a class="markdownIt-Anchor" href="#开发类软件"></a> 开发类软件</h1>
+<p>只是我自己用的，大佬勿喷，小弟只会用这些，并且用的没有各位大佬顺手~</p>
+<h2 id="visual-studio-code-code-editing-redefined"><a class="markdownIt-Anchor" href="#visual-studio-code-code-editing-redefined"></a> Visual Studio Code - Code Editing. Redefined</h2>
+<p>官网链接： <span class="exturl" data-url="aHR0cHM6Ly9jb2RlLnZpc3VhbHN0dWRpby5jb20v">https://code.visualstudio.com/<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h2 id="pycharm-the-only-python-ide-you-need-jetbrains"><a class="markdownIt-Anchor" href="#pycharm-the-only-python-ide-you-need-jetbrains"></a> PyCharm: The only Python IDE you need - JetBrains</h2>
+<p>官网链接： <span class="exturl" data-url="aHR0cHM6Ly93d3cuamV0YnJhaW5zLmNvbS96aC1jbi9weWNoYXJtLw==">https://www.jetbrains.com/zh-cn/pycharm/<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h2 id="datagrip"><a class="markdownIt-Anchor" href="#datagrip"></a> DataGrip</h2>
+<p>官网链接： <span class="exturl" data-url="aHR0cHM6Ly93d3cuamV0YnJhaW5zLmNvbS96aC1jbi9kYXRhZ3JpcC8=">https://www.jetbrains.com/zh-cn/datagrip/<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h2 id="notepad3"><a class="markdownIt-Anchor" href="#notepad3"></a> NOTEPAD3</h2>
+<p>GITHUB仓库：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3Jpem9uZXNvZnQvTm90ZXBhZDM=">https://github.com/rizonesoft/Notepad3<i class="fa fa-external-link-alt"></i></span></p>
+<p>下载地址：<span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3Jpem9uZXNvZnQvTm90ZXBhZDMvcmVsZWFzZXM=">https://github.com/rizonesoft/Notepad3/releases<i class="fa fa-external-link-alt"></i></span></p>
+<p>为啥不推荐 notepad++ ？因为那傻逼作者是个杂种胎毒！台湾永远是中国的！</p>
+<p>注意：这个软件新版 release 安装过程有捆绑软件，请自行拒绝安装！！！</p>
+</br>
+<h1 id="娱乐"><a class="markdownIt-Anchor" href="#娱乐"></a> 娱乐</h1>
+<p>影音方面的软件，包括一些设置之类的</p>
+<h2 id="potplayer"><a class="markdownIt-Anchor" href="#potplayer"></a> potplayer</h2>
+<p>官网链接：<span class="exturl" data-url="aHR0cHM6Ly9wb3RwbGF5ZXIuZGF1bS5uZXQv">https://potplayer.daum.net/<i class="fa fa-external-link-alt"></i></span></p>
+<p>下载链接：<span class="exturl" data-url="aHR0cHM6Ly90MS5kYXVtY2RuLm5ldC9wb3RwbGF5ZXIvUG90UGxheWVyL1ZlcnNpb24vTGF0ZXN0L1BvdFBsYXllclNldHVwNjQuZXhl">https://t1.daumcdn.net/potplayer/PotPlayer/Version/Latest/PotPlayerSetup64.exe<i class="fa fa-external-link-alt"></i></span></p>
+<p>这是我的 potplayer 配置：<span class="exturl" data-url="aHR0cHM6Ly93d2lnLmxhbnpvdWUuY29tL2lvUGRpMnpjYndqYw==">蓝奏云下载<i class="fa fa-external-link-alt"></i></span> 使用直接下载后注册即可。或者可以选择性使用的配置</p>
+<p><img data-src="https://s2.loli.net/2025/06/22/8G6HLXhroJASesW.png" alt="image-20250622195449785" /></p>
+<p><img data-src="https://s2.loli.net/2025/06/22/k9lTdM5mvYiBceO.png" alt="image-20250622195555324" /></p>
+<p><img data-src="https://s2.loli.net/2025/06/22/RrUZTQt5wBN1eXG.png" alt="image-20250622195729294" /></p>
+<p><img data-src="https://s2.loli.net/2025/06/22/tLiE8QmIfXPAOM6.png" alt="image-20250622195754033" /></p>
+<p><strong>bilibili potplayer 插件</strong></p>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL2NoZW4zMTAvQmlsaWJpbGlQb3RQbGF5ZXI=">github page<i class="fa fa-external-link-alt"></i></span></p>
+<p>适用于 PotPlayer 的 Bilibili 插件。如果配合<span class="exturl" data-url="aHR0cHM6Ly9ncmVhc3lmb3JrLm9yZy96aC1DTi9zY3JpcHRzLzQ2MTgwMC1iaWxpYmlsaXBvdHBsYXllcg==">油猴脚本<i class="fa fa-external-link-alt"></i></span>，可以直接在网页打开 PotPlayer 进行播放</p>
+<p>用什么 edge 看视频和直播，动不动就抽风。用 potplayer 呀~！</p>
+</br>
+<h2 id="网易云音乐"><a class="markdownIt-Anchor" href="#网易云音乐"></a> 网易云音乐</h2>
+<p>这玩意去网易云官网下载就好了</p>
+<p>官网链接：<span class="exturl" data-url="aHR0cHM6Ly9tdXNpYy4xNjMuY29tLw==">https://music.163.com/<i class="fa fa-external-link-alt"></i></span></p>
+<p>下载网站：<span class="exturl" data-url="aHR0cHM6Ly9tdXNpYy4xNjMuY29tLyMvZG93bmxvYWQ=">https://music.163.com/#/download<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h1 id="直播类"><a class="markdownIt-Anchor" href="#直播类"></a> 直播类</h1>
+<p>直播软件和直播插件~</p>
+</br>
+<h2 id="open-broadcaster-software-obs"><a class="markdownIt-Anchor" href="#open-broadcaster-software-obs"></a> Open Broadcaster Software | OBS</h2>
+<p>一款直播推流编码软件，开源且很好用。</p>
+<p>官网链接：<span class="exturl" data-url="aHR0cHM6Ly9vYnNwcm9qZWN0LmNvbS8=">https://obsproject.com/<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<h3 id="obs-插件"><a class="markdownIt-Anchor" href="#obs-插件"></a> OBS 插件</h3>
+<blockquote>
+<p>obs-multi-rtmp (多路推流)</p>
+</blockquote>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3NvcmF5dWtpL29icy1tdWx0aS1ydG1w">https://github.com/sorayuki/obs-multi-rtmp<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<blockquote>
+<p>obs-composite-blur (模糊插件，可局部模糊)</p>
+</blockquote>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL0Zpbml0ZVNpbmd1bGFyaXR5L29icy1jb21wb3NpdGUtYmx1cg==">https://github.com/FiniteSingularity/obs-composite-blur<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<blockquote>
+<p>obs-auto-subtitle (字幕插件，需要最好是连接大厂的语言模型 API)</p>
+</blockquote>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3N1bW1lcnNocmltcC9vYnMtYXV0by1zdWJ0aXRsZQ==">https://github.com/summershrimp/obs-auto-subtitle<i class="fa fa-external-link-alt"></i></span></p>
+</br>
+<blockquote>
+<p>waveform (声音可视化)</p>
+</blockquote>
+<p><span class="exturl" data-url="aHR0cHM6Ly9naXRodWIuY29tL3BoYW5kYXNtL3dhdmVmb3Jt">https://github.com/phandasm/waveform<i class="fa fa-external-link-alt"></i></span></p>
+]]></content>
+      <categories>
+        <category>软件推荐</category>
+        <category>日常</category>
+      </categories>
+      <tags>
+        <tag>开发</tag>
+        <tag>娱乐</tag>
+        <tag>游戏</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Weicome</title>
+    <url>/2025/welcome/</url>
+    <content><![CDATA[<center><font face="华文行楷" size="80%">学吧，学无止境</font></center>
+<p><img data-src="https://s2.loli.net/2025/06/25/f3Oc5pKtkdloi6Q.png" alt="" /></p>
+<p>图片来源（包含主页背景）：<a href="https://space.bilibili.com/19916355"><strong>花铭__</strong> @bilibili</a></p>
+]]></content>
+  </entry>
+</search>
