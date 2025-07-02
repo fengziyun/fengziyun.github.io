@@ -518,4 +518,64 @@
 <p>图片来源（包含主页背景）：<a href="https://space.bilibili.com/19916355"><strong>花铭__</strong> @bilibili</a></p>
 ]]></content>
   </entry>
+  <entry>
+    <title>Linux 在其他用户的 VNC 桌面上打开自己的窗口</title>
+    <url>/2025/xauth-share-desktop/</url>
+    <content><![CDATA[<h1 id="前言"><a class="markdownIt-Anchor" href="#前言"></a> 前言</h1>
+<p>属于基本用不到的技术，我碰到了，还是分享出来了。</p>
+<p>起初我这每天都有自动测试，是一个单独的用户和单独的桌面，自动测试的启动 shell 脚本里写着 <code>export DISPLAY=:2</code> ，但我不小心在我自己的桌面跑起来了这个脚本，如果不做配置，有些窗口就会打开失败，任务也就会失败。</p>
+</br>
+<span id="more"></span>
+<p>首先我们得了解为什么会失败，目前的环境入下：</p>
+<p>user（我自己） : <code>export DISPLAY=:1</code></p>
+<p>test（测试账号） : <code>export DISPLAY=:2</code></p>
+</br>
+<p>在我自己的桌面使用 export DISPLAY=:2 后，无法打开任何窗口，因为 :2 的窗口是 test 用户的，我不能直接打开他人窗口，因为 x server 的限制。既然是 x server 的限制，我配置 x server 不就行了？</p>
+</br>
+<h1 id="x-server"><a class="markdownIt-Anchor" href="#x-server"></a> X server</h1>
+<p>如何在别人的桌面打开自己的窗口，步骤如下：</p>
+<ol>
+<li>在 test 的桌面获取 test 用户 VNC 的桌面 cookie：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xauth list $DISPLAY</span><br></pre></td></tr></table></figure>
+<p>输出示例：</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">your-hostname/unix:14  MIT-MAGIC-COOKIE-1  abc123...（一串16进制字符）</span><br></pre></td></tr></table></figure>
+ </br>
+<ol start="2">
+<li>在 user 的终端中添加 test 的桌面 cookie：</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xauth add your-hostname/unix:14 . abc123...（粘贴 test 的 cookie）</span><br></pre></td></tr></table></figure>
+ </br>
+<p>这样就设置完了，在 user 的终端使用 <code>export DISPLAY=:2</code> ，配置完环境变量后，就可以直接在这个终端打开图形窗口了，这个窗口会显示在 test :2 的桌面上。</p>
+ </br>
+<ol start="3">
+<li>备用方案：临时放宽权限（不推荐，有安全风险）</li>
+</ol>
+<ul>
+<li>在 test 用户终端中（在 <code>:2</code> 会话中）：</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">允许本地所有用户连接（慎用！）</span></span><br><span class="line">xhost +local:</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p>之后你可直接设置 <code>export DISPLAY=:2</code> 并启动应用。</p>
+</li>
+<li>
+<p>完成后务必关闭权限（ test 用户终端执行 ）：</p>
+</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">xhost -local:</span><br></pre></td></tr></table></figure>
+ </br>
+<p>这只是个没用的知识，但该用到的时候能用得到，希望这篇文章能帮助到你们~</p>
+]]></content>
+      <categories>
+        <category>技术分享</category>
+        <category>ops</category>
+      </categories>
+      <tags>
+        <tag>X server</tag>
+        <tag>没用的知识</tag>
+        <tag>linux</tag>
+        <tag>vnc</tag>
+      </tags>
+  </entry>
 </search>
